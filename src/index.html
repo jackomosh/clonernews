@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Hacker News Reader</title>
+  <link rel="stylesheet" href="/styles/main.css" />
+  <link rel="stylesheet" href="/styles/components.css" />
+  <link rel="stylesheet" href="/styles/comments.css" />
+</head>
+<body>
+  <div id="app">
+    <header class="app-header">
+      <div class="header-content">
+        <h1 class="logo">⚡ HN Live</h1>
+        <nav class="feed-selector">
+          <button class="nav-btn active" data-feed="newstories">New</button>
+          <button class="nav-btn" data-feed="topstories">Top</button>
+          <button class="nav-btn" data-feed="jobstories">Jobs</button>
+        </nav>
+      </div>
+    </header>
+
+    <!-- Sticky Notification Banner for Live Data updates -->
+    <div id="live-banner" class="live-banner hidden" role="button" tabindex="0"></div>
+
+    <main class="feed-wrapper">
+      <div id="feed-container" class="feed-container"></div>
+      <div id="scroll-sentinel" class="scroll-sentinel"></div>
+    </main>
+  </div>
+
+  <script type="module" src="/main.js"></script>
+</body>
+</html>

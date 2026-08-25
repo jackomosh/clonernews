@@ -1,0 +1,168 @@
+/* src/styles/comments.css */
+
+/* ==========================================================================
+   1. Comments Wrapper & Item Layout
+   ========================================================================== */
+
+.comments-container {
+  margin-top: 0.75rem;
+  padding-top: 0.75rem;
+  border-top: 1px dashed var(--border-color);
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.comment-item {
+  position: relative;
+  font-size: 0.875rem;
+  line-height: 1.45;
+  color: var(--text-main);
+  transition: opacity 0.15s ease;
+}
+
+/* Structural indentation and hierarchy lines for child comments */
+.comment-item .comment-replies {
+  margin-left: 0.75rem;
+  padding-left: 0.75rem;
+  border-left: 2px solid var(--border-color);
+  margin-top: 0.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  transition: border-color 0.2s ease;
+}
+
+/* Highlight the active thread line on hover for easier scanning */
+.comment-item .comment-replies:hover {
+  border-left-color: var(--accent);
+}
+
+/* ==========================================================================
+   2. Comment Metadata Header
+   ========================================================================== */
+
+.comment-meta {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.775rem;
+  color: var(--text-muted);
+  margin-bottom: 0.25rem;
+  user-select: none;
+}
+
+.comment-author {
+  font-weight: 600;
+  color: var(--text-main);
+}
+
+.comment-time {
+  color: var(--text-muted);
+}
+
+.comment-collapse-btn {
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  font-family: monospace;
+  font-size: 0.8rem;
+  font-weight: bold;
+  cursor: pointer;
+  padding: 0 2px;
+  border-radius: 2px;
+  transition: color 0.15s ease, background-color 0.15s ease;
+}
+
+.comment-collapse-btn:hover {
+  color: var(--accent);
+  background-color: var(--accent-light);
+}
+
+/* ==========================================================================
+   3. Comment Body Content & HTML Reset
+   ========================================================================== */
+
+.comment-body {
+  color: var(--text-main);
+  word-break: break-word;
+  overflow-wrap: anywhere;
+}
+
+.comment-body p {
+  margin-bottom: 0.4rem;
+}
+
+.comment-body p:last-child {
+  margin-bottom: 0;
+}
+
+.comment-body a {
+  color: var(--accent);
+  text-decoration: underline;
+}
+
+.comment-body pre, .comment-body code {
+  background: rgba(0, 0, 0, 0.05);
+  padding: 0.1rem 0.3rem;
+  border-radius: 3px;
+  font-family: monospace;
+  font-size: 0.825rem;
+  white-space: pre-wrap;
+}
+
+/* ==========================================================================
+   4. Collapsed & Special States
+   ========================================================================== */
+
+.comment-item.collapsed {
+  opacity: 0.75;
+}
+
+.comment-item.collapsed .comment-content-wrapper {
+  display: none;
+}
+
+.comment-deleted {
+  background: rgba(0, 0, 0, 0.015);
+  padding: 0.4rem 0.6rem;
+  border-radius: 4px;
+  border-left: 2px solid #d1d5db;
+}
+
+.comment-body.muted {
+  color: var(--text-muted);
+  font-style: italic;
+  font-size: 0.8rem;
+}
+
+.no-comments {
+  font-size: 0.825rem;
+  color: var(--text-muted);
+  font-style: italic;
+  padding: 0.5rem 0;
+}
+
+/* ==========================================================================
+   5. Dark Mode Compatibility
+   ========================================================================== */
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg-primary: #121212;
+    --bg-card: #1e1e1e;
+    --text-main: #e0e0e0;
+    --text-muted: #a0a0a0;
+    --border-color: #2c2c2c;
+    --accent-light: rgba(255, 102, 0, 0.15);
+  }
+
+  .comment-body pre, .comment-body code {
+    background: rgba(255, 255, 255, 0.08);
+  }
+
+  .comment-deleted {
+    background: rgba(255, 255, 255, 0.02);
+    border-left-color: #4b5563;
+  }
+}
