@@ -4,19 +4,21 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Hacker News Reader</title>
-  <link rel="stylesheet" href="/styles/main.css" />
-  <link rel="stylesheet" href="/styles/components.css" />
-  <link rel="stylesheet" href="/styles/comments.css" />
+  <link rel="stylesheet" href="./styles/main.css" />
+  <link rel="stylesheet" href="./styles/components.css" />
+  <link rel="stylesheet" href="./styles/comments.css" />
 </head>
 <body>
   <div id="app">
     <header class="app-header">
       <div class="header-content">
-        <h1 class="logo">⚡ HN Live</h1>
+        <h1 class="logo">⚡ Hacker News Live</h1>
         <nav class="feed-selector">
           <button class="nav-btn active" data-feed="newstories">New</button>
           <button class="nav-btn" data-feed="topstories">Top</button>
           <button class="nav-btn" data-feed="jobstories">Jobs</button>
+          <button class="nav-btn" data-feed="askstories">Ask</button>
+          <button class="nav-btn" data-feed="showstories">Show</button>
         </nav>
       </div>
     </header>
@@ -26,10 +28,13 @@
 
     <main class="feed-wrapper">
       <div id="feed-container" class="feed-container"></div>
-      <div id="scroll-sentinel" class="scroll-sentinel"></div>
+      <!-- Changed from scroll-sentinel to view-more container -->
+      <div id="pagination-controls" class="pagination-controls">
+        <button id="load-more-btn" class="load-more-btn hidden">View More</button>
+      </div>
     </main>
   </div>
 
-  <script type="module" src="/main.js"></script>
+  <script type="module" src="./main.js"></script>
 </body>
 </html>

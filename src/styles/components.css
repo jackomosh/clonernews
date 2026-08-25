@@ -251,3 +251,34 @@
 }
 
 .hidden { display: none !important; }
+
+.pagination-controls {
+  display: flex;
+  justify-content: center;
+  padding: 24px 0;
+}
+
+.load-more-btn {
+  background-color: #ff6600;
+  color: white;
+  border: none;
+  padding: 12px 28px;
+  font-size: 1rem;
+  font-weight: 600;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.load-more-btn:hover {
+  background-color: #e55c00;
+}
+
+.load-more-btn:disabled {
+  background-color: #cccccc;
+  cursor: not-allowed;
+}
+
+.load-more-btn.hidden {
+  display: none;
+}

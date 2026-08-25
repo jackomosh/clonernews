@@ -4,52 +4,41 @@ import { hnApi } from '../api/hnApi.js';
 import { renderPostCard } from '../components/PostCard.js';
 
 /**
- * Manages fetching, sorting, and progressive rendering (infinite scroll)
+ * Manages fetching, sorting, and manual pagination (View More)
  * for Hacker News feeds.
  */
 export class FeedManager {
   /**
    * @param {HTMLElement} container - DOM element where post cards will be appended.
-   * @param {HTMLElement} sentinel - DOM element targeted by IntersectionObserver for infinite scrolling.
+   * @param {HTMLElement} loadMoreBtn - DOM element for the "View More" button.
    * @param {Object} [options]
    * @param {number} [options.pageSize=15] - Number of posts to fetch per batch.
    */
-  constructor(container, sentinel, options = {}) {
+  constructor(container, loadMoreBtn, options = {}) {
     this.container = container;
-    this.sentinel = sentinel;
+    this.loadMoreBtn = loadMoreBtn;
     this.pageSize = options.pageSize || 15;
 
     this.currentFeed = 'newstories';
     this.allFeedIds = [];
     this.currentIndex = 0;
     this.isLoading = false;
-    this.observer = null;
 
-    this._initObserver();
+    this._bindButtonEvents();
   }
 
   /**
-   * Sets up the IntersectionObserver on the sentinel element.
+   * Attaches event listener to the "View More" button.
    * @private
    */
-  _initObserver() {
-    if (!this.sentinel) return;
+  _bindButtonEvents() {
+    if (!this.loadMoreBtn) return;
 
-    this.observer = new IntersectionObserver(
-      (entries) => {
-        const entry = entries[0];
-        if (entry.isIntersecting && !this.isLoading && this.hasMore()) {
-          this.loadNextChunk();
-        }
-      },
-      {
-        root: null, // viewport
-        rootMargin: '300px', // trigger 300px before reaching bottom
-        threshold: 0.1,
+    this.loadMoreBtn.addEventListener('click', () => {
+      if (!this.isLoading && this.hasMore()) {
+        this.loadNextChunk();
       }
-    );
-
-    this.observer.observe(this.sentinel);
+    });
   }
 
   /**
@@ -62,13 +51,14 @@ export class FeedManager {
 
   /**
    * Switch to a new feed type and reset state.
-   * @param {'newstories' | 'topstories' | 'beststories' | 'jobstories'} feedType
+   * @param {'newstories' | 'topstories' | 'beststories' | 'jobstories' | 'askstories' | 'showstories'} feedType
    */
   async setFeed(feedType) {
     this.currentFeed = feedType;
     this.allFeedIds = [];
     this.currentIndex = 0;
     this.container.innerHTML = '';
+    this._hideLoadMoreButton();
     this._renderLoadingState();
 
     try {
@@ -96,7 +86,7 @@ export class FeedManager {
     if (this.isLoading || !this.hasMore()) return;
 
     this.isLoading = true;
-    this._showSentinelSpinner();
+    this._setButtonLoadingState(true);
 
     try {
       // 1. Slice next batch of IDs
@@ -125,7 +115,8 @@ export class FeedManager {
       console.error('[FeedManager] Error fetching post batch:', err);
     } finally {
       this.isLoading = false;
-      this._hideSentinelSpinner();
+      this._setButtonLoadingState(false);
+      this._updateButtonVisibility();
     }
   }
 
@@ -139,7 +130,6 @@ export class FeedManager {
       .sort((a, b) => (b.time || 0) - (a.time || 0));
 
     sorted.forEach((item) => {
-      // Add ID to top of internal array if not present
       if (!this.allFeedIds.includes(item.id)) {
         this.allFeedIds.unshift(item.id);
         this.currentIndex++;
@@ -153,6 +143,32 @@ export class FeedManager {
   }
 
   // UI State Helpers
+
+  _updateButtonVisibility() {
+    if (!this.loadMoreBtn) return;
+    if (this.hasMore()) {
+      this.loadMoreBtn.classList.remove('hidden');
+    } else {
+      this.loadMoreBtn.classList.add('hidden');
+    }
+  }
+
+  _hideLoadMoreButton() {
+    if (this.loadMoreBtn) {
+      this.loadMoreBtn.classList.add('hidden');
+    }
+  }
+
+  _setButtonLoadingState(loading) {
+    if (!this.loadMoreBtn) return;
+    if (loading) {
+      this.loadMoreBtn.disabled = true;
+      this.loadMoreBtn.textContent = 'Loading...';
+    } else {
+      this.loadMoreBtn.disabled = false;
+      this.loadMoreBtn.textContent = 'View More';
+    }
+  }
 
   _renderLoadingState() {
     this.container.innerHTML = `
@@ -180,24 +196,7 @@ export class FeedManager {
     `;
   }
 
-  _showSentinelSpinner() {
-    if (this.sentinel) {
-      this.sentinel.innerHTML = `<div class="spinner-small"></div>`;
-    }
-  }
-
-  _hideSentinelSpinner() {
-    if (this.sentinel) {
-      this.sentinel.innerHTML = '';
-    }
-  }
-
-  /**
-   * Cleanup observer instance when destroying component.
-   */
   destroy() {
-    if (this.observer) {
-      this.observer.disconnect();
-    }
+    // No observer cleanup required
   }
 }
